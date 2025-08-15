@@ -1,7 +1,8 @@
+
 $FolderPath = Read-Host "Enter the folder path"
 
 if (-not (Test-Path $FolderPath)) { return }
-
+Clear-Host
 $Files = Get-ChildItem -Path $FolderPath -File -Recurse
 
 foreach ($File in $Files) {
@@ -11,3 +12,4 @@ foreach ($File in $Files) {
         # Errors are silently ignored
     }
 }
+
