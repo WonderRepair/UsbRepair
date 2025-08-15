@@ -1,0 +1,30 @@
+Clear-Host
+
+$FolderPath = Read-Host "Enter the folder path"
+
+if (-not (Test-Path $FolderPath)) {
+    Write-Host "The folder path does not exist." -ForegroundColor Red
+    return
+}
+
+# Get all files in the folder (non-recursive)
+$Files = Get-ChildItem -Path $FolderPath -File | Sort-Object Name
+
+$Counter = 1
+
+foreach ($File in $Files) {
+    $Extension = $File.Extension
+    $NewName = "$Counter$Extension"
+    $NewPath = Join-Path -Path $FolderPath -ChildPath $NewName
+
+    # If a file with the new name already exists, skip it
+    if (-not (Test-Path $NewPath)) {
+        Rename-Item -Path $File.FullName -NewName $NewName
+    } else {
+        Write-Host "Skipping $NewName because it already exists." -ForegroundColor Yellow
+    }
+
+    $Counter++
+}
+
+Write-Host "[*] File renaming process complete." -ForegroundColor Green

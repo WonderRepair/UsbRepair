@@ -1,0 +1,34 @@
+Clear-Host
+
+$FolderPath = Read-Host "Enter the folder path"
+
+if (-not (Test-Path $FolderPath)) {
+    Write-Host "The folder path does not exist." -ForegroundColor Red
+    return
+}
+
+# Get all files in the folder (non-recursive)
+$Files = Get-ChildItem -Path $FolderPath -File
+
+foreach ($File in $Files) {
+    $SizeKB = [math]::Round($File.Length / 1KB, 2)
+    
+    if ($SizeKB -lt 500) {
+        $NewExtension = ".jpg"
+    } else {
+        $NewExtension = ".mp4"
+    }
+
+    $NewName = [System.IO.Path]::GetFileNameWithoutExtension($File.Name) + $NewExtension
+    $NewPath = Join-Path -Path $FolderPath -ChildPath $NewName
+
+    # Skip if a file with the new name already exists
+    if (-not (Test-Path $NewPath)) {
+        Rename-Item -Path $File.FullName -NewName $NewName
+        Write-Host "Renamed $($File.Name) → $NewName"
+    } else {
+        Write-Host "Skipping $NewName because it already exists." -ForegroundColor Yellow
+    }
+}
+
+Write-Host "[*] File extension update complete." -ForegroundColor Green
